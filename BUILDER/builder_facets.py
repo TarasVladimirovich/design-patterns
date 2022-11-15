@@ -81,5 +81,5 @@ if __name__ == '__main__':
             .earning(123000)\
         .build()
     print(p)
-    person2 = PersonBuilder().build()
-    print(person2)
+    # person2 = PersonBuilder().build()
+    # print(person2)
