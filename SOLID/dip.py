@@ -1,5 +1,6 @@
 """
 Dependency Inversion Principle
+https://en.wikipedia.org/wiki/Dependency_inversion_principle
 """
 
 from abc import abstractmethod
@@ -19,7 +20,8 @@ class Person:
 
 class RelationshipBrowser:
     @abstractmethod
-    def find_all_children_of(self, name): pass
+    def find_all_children_of(self, name):
+        pass
 
 
 class Relationships(RelationshipBrowser):  # low-level
@@ -32,7 +34,7 @@ class Relationships(RelationshipBrowser):  # low-level
             (parent, Relationship.PARENT, child)
         )
         self.relations.append(
-            (child, Relationship.PARENT, parent)
+            (child, Relationship.CHILD, parent)
         )
             
     def find_all_children_of(self, name):

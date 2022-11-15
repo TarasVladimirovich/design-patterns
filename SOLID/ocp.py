@@ -1,5 +1,7 @@
 """
 Open-closed Principle
+https://en.wikipedia.org/wiki/Open%E2%80%93closed_principle
+software entities (classes, modules, functions, etc.) should be open for extension, but closed for modification
 """
 
 from enum import Enum
@@ -43,24 +45,37 @@ class ProductFilter:
                 yield p
 
     # state space explosion
-    # 3 criteria
-    # c s w cs sw cw csw = 7 methods
+    # 2 --> 3 (criteria)
+    # 3 --> 7 c s w cs sw cw csw = 7 methods
 
     # OCP = open for extension, closed for modification
 
 
+# Specification pattern
 class Specification:
     def is_satisfied(self, item):
-        pass
+        raise NotImplementedError()
 
     # and operator makes life easier
     def __and__(self, other):
+        print(self, other)
         return AndSpecification(self, other)
+
+
+class AndSpecification(Specification):
+    def __init__(self, *args):
+        print(*args)
+        self.args = args
+
+    def is_satisfied(self, item):
+        return all(map(
+            lambda spec: spec.is_satisfied(item), self.args
+        ))
 
 
 class Filter:
     def filter(self, items, spec):
-        pass
+        raise NotImplementedError()
 
 
 class ColorSpecification(Specification):
@@ -79,16 +94,6 @@ class SizeSpecification(Specification):
         return item.size == self.size
 
 
-class AndSpecification(Specification):
-    def __init__(self, *args):
-        self.args = args
-
-    def is_satisfied(self, item):
-        return all(map(
-            lambda spec: spec.is_satisfied(item), self.args
-        ))
-
-
 class BetterFilter(Filter):
     def filter(self, items, spec):
         for item in items:
@@ -100,9 +105,12 @@ if __name__ == '__main__':
     apple = Product('Apple', Color.GREEN, Size.SMALL)
     tree = Product('Tree', Color.GREEN, Size.LARGE)
     house = Product('House', Color.BLUE, Size.LARGE)
+    car = Product('Car', Color.BLUE, Size.LARGE)
 
-    products = [apple, tree, house]
+    products = [apple, tree, house, car]
 
+    # Bad example
+    print("******* BAD EXAMPLE *******")
     pf = ProductFilter()
     print('Green products (old):')
     for p in pf.filter_by_color(products, Color.GREEN):
@@ -111,20 +119,27 @@ if __name__ == '__main__':
     # ^ BEFORE
 
     # v AFTER
+    print("******* GOOD EXAMPLE *******")
     bf = BetterFilter()
-
-    print('Green products (new):')
+    print('\nGreen products (new):')
     green = ColorSpecification(Color.GREEN)
     for p in bf.filter(products, green):
         print(f' - {p.name} is green')
 
-    print('Large products:')
+    print('\nLarge products:')
     large = SizeSpecification(Size.LARGE)
     for p in bf.filter(products, large):
         print(f' - {p.name} is large')
 
-    print('Large blue items:')
+    print('\nLarge blue items:')
     # large_blue = AndSpecification(large, ColorSpecification(Color.BLUE))
-    large_blue = large & ColorSpecification(Color.BLUE)
+    blue = ColorSpecification(Color.BLUE)
+    large_blue = large & blue
     for p in bf.filter(products, large_blue):
         print(f' - {p.name} is large and blue')
+
+    print('\nLarge green items:')
+    large_green = large & green
+    for p in bf.filter(products, large_blue):
+        print(f' - {p.name} is large and green')
+

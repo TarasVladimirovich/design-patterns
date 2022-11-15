@@ -91,4 +91,4 @@ class MultiFunctionMachine(MultiFunctionDevice):
 
 printer = OldFashionedPrinter()
 printer.fax(123)  # nothing happens
-printer.scan(123)  # oops!
+# printer.scan(123)  # oops!

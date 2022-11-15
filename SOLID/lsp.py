@@ -1,6 +1,6 @@
 """
 The Liskov substitution principle:
-"Functions that use pointers or references to base classes must be able
+Functions that use pointers or references to base classes must be able
 to use objects of derived classes without knowing it.
 https://en.wikipedia.org/wiki/Liskov_substitution_principle
 """
@@ -38,15 +38,16 @@ class Rectangle:
 class Square(Rectangle):
     def __init__(self, size):
         Rectangle.__init__(self, size, size)
+        # super(Square, self).__init__(size, size)
         # super().__init__(size, size)
 
     @Rectangle.width.setter
     def width(self, value):
-        _width = _height = value
+        self._width = self._height = value
 
     @Rectangle.height.setter
     def height(self, value):
-        _width = _height = value
+        self._width = self._height = value
 
 
 def use_it(rc):
